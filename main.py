@@ -5,6 +5,8 @@ import pyttsx3
 import webbrowser
 import requests
 from datetime import datetime
+from dotenv import load_dotenv
+
 
 # Constants and initializations
 ASSISTANT_NAME = "friday"
