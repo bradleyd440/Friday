@@ -115,3 +115,66 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
+    
+    import openai
+import random
+import datetime
+import sys
+import os
+
+class Config:
+    OPENAI_API_KEY = 'YOUR_OPENAI_API_KEY'
+
+class Assistant:
+    def __init__(self):
+        openai.api_key = Config.OPENAI_API_KEY
+
+    def speak(self, text):
+        # Implement your text-to-speech functionality here
+        print(text)  # Placeholder for demonstration
+
+    def ask_openai(self, question):
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "user", "content": question}
+                ]
+            )
+            answer = response.choices[0].message['content'].strip()
+            return answer
+        except Exception as e:
+            self.speak("Sorry, I couldn't fetch an answer.")
+            return None
+
+    def wish(self):
+        hour = int(datetime.datetime.now().hour)
+        if hour < 12:
+            self.speak("Good Morning")
+        elif hour < 18:
+            self.speak("Good Afternoon")
+        else:
+            self.speak("Good Evening")
+
+    def startup(self):
+        self.speak("Initializing Friday")
+        self.wish()
+        self.speak("I am Friday. Online and ready. How may I assist you?")
+
+    def run(self):
+        self.startup()
+
+        while True:
+            command = input("You: ")  # Placeholder for voice input
+            if "bye" in command or "goodbye" in command:
+                self.speak("Alright, going offline. Have a great day!")
+                sys.exit()
+            else:
+                response = self.ask_openai(command)
+                if response:
+                    self.speak(response)
+
+if __name__ == "__main__":
+    assistant = Assistant()
+    assistant.run()
