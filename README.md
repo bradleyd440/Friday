@@ -85,6 +85,9 @@ The adapter implements the same `FirebaseLike` interface as the in-memory adapte
 
 > Important: this repo does **not** currently include an Android app module (`android/`) or React Native runtime project files. APK generation is not possible until those are added.
 
+For a concrete host-app integration sequence, use:
+- `ANDROID_HOST_WIRING.md`
+
 To produce an APK, you must first integrate this subsystem into an Android-capable app shell:
 
 1. Create or import a React Native (or native Android) project that hosts these screens/services.

@@ -1,43 +1,40 @@
 # PROJECT STATUS
 
 ## Completed items
-- Added a production-oriented Firebase REST adapter at `src/services/lockMode/firebaseRestAdapter.ts` implementing the `FirebaseLike` contract used by Lock Mode services.
-- Adapter supports:
-  - `set` via HTTP `PUT`
-  - `push` via HTTP `POST` with generated key return
-  - `onValue` polling-based realtime callback emulation
-  - env-based factory `createFirebaseRestAdapterFromEnv()`
-- Added tests for Firebase REST adapter request behavior and listener updates:
-  - set path/method/auth query
-  - push generated key handling
-  - onValue polling change detection
-- Updated README with explicit Option 1 production-adapter usage instructions.
-- Updated `.env.example` with `FIREBASE_AUTH_TOKEN` for authenticated REST requests.
+- Implemented modular Lock Mode engine, store, types, simulator device service, and core engines under `src/`.
+- Implemented Firebase REST adapter (`src/services/lockMode/firebaseRestAdapter.ts`) with:
+  - `set` (PUT),
+  - `push` (POST),
+  - polling-based `onValue`.
+- Added auth hardening for Firebase adapter:
+  - direct token env flow (`FIREBASE_AUTH_TOKEN`),
+  - automatic email/password token exchange (`resolveFirebaseAuthTokenFromEnv`),
+  - async env factory (`createFirebaseRestAdapterFromEnvAsync`).
+- Added/expanded tests for adapter behavior and auth token resolution in `src/__tests__/firebaseRestAdapter.test.ts`.
+- Added explicit Firebase setup docs for `the-cage-ff434` and async auth setup in `README.md`.
+- Added `ANDROID_HOST_WIRING.md` with concrete host-app integration checklist and APK build sequence.
 
 ## Known issues
-- This repository still has no Android application module (`android/` Gradle project), so APK output cannot be generated directly from this repo alone.
-- UI components are not yet wired into a concrete app-level navigation container in this repository.
-- In this environment, npm registry access is blocked (HTTP 403), preventing dependency installation and local TS test execution.
+- This repository still does not contain an actual Android app module (`android/`), so APK cannot be built from this repo alone.
+- UI components exist, but there is no app-level navigation container in this repo.
+- In this execution environment, npm registry access is blocked (HTTP 403), preventing dependency installation and TypeScript test execution.
 
 ## Exact commands run
-- `cat > src/services/lockMode/firebaseRestAdapter.ts <<'EOF' ...`
-- `cat > src/__tests__/firebaseRestAdapter.test.ts <<'EOF' ...`
-- `python - <<'PY' ...` (README update)
-- `python - <<'PY' ...` (`.env.example` update)
-- `cat > PROJECT_STATUS.md <<'EOF' ...`
+- `cat > ANDROID_HOST_WIRING.md <<'EOF' ...`
 - `python -m py_compile main.py`
 - `npm test`
-- `npm install`
+- `git status --short`
 
 ## What is needed to produce the APK
-1. Add/generate an Android-capable host app (`android/` Gradle wrapper + app module).
-2. Wire Lock Mode screens/services into navigation and app lifecycle.
-3. Use `FirebaseRestAdapter` (or Firebase SDK adapter) with valid Firebase credentials.
-4. Run on a machine with npm registry access:
+1. Create/import an Android-capable host app (React Native or native Android) with an `android/` Gradle module.
+2. Integrate this repo's lock mode `src/` module into that host app.
+3. Configure Firebase env vars (`FIREBASE_DATABASE_URL` + token flow).
+4. Run on a machine with npm access:
    - `npm install`
    - `npm test`
    - `npm run build`
-5. Build release APK from Android project root:
+5. Build APK from host app Android directory:
+   - `./gradlew assembleDebug`
    - `./gradlew assembleRelease`
-6. Configure signing and retrieve artifact:
+6. Retrieve artifact:
    - `android/app/build/outputs/apk/release/app-release.apk`
